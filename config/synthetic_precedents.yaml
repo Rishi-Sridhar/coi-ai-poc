@@ -1,0 +1,277 @@
+# SYNTHETIC PRECEDENTS — demonstration examples only. They do NOT represent EY decisions or policy.
+# final_actions: illustrative final action(s) from the synthetic POC action catalogue (config/action_catalog.yaml).
+#
+# Deliberate gap for the learning demonstration: NO seed encodes
+#   RELATIVE_AT_SOE = Yes AND RELATIVE_INFLUENCE = No  (relative at SOE in an unrelated role).
+# That pattern is learned live from a reviewer decision (Learning Case A).
+# Only two seeds have RELATIVE_AT_SOE = Yes (both with influence = Yes), so a reviewer precedent
+# for Case A still ranks in the top 3 for Learning Case C and can be shown as DISTINGUISHED.
+
+_no: &no
+  RELATIVE_AT_SOE: "No"
+  THIRD_PARTY_INTEREST: "No"
+  PRIOR_SOE_EMPLOYMENT: "No"
+  IMPROPER_INFORMATION: "No"
+  OTHER_CONFLICT: "No"
+
+precedents:
+  - id: SYN-001
+    created_at: "2026-01-05T09:00:00+00:00"
+    title: No disclosures — advisory to state utility
+    opportunity_summary: Finance-function advisory for a state-owned utility. SOE relationship Client. Respondent role Consultant; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers: {<<: *no}
+    outcome: NO CONFLICT
+    rationale: All declarations are No and no free-text indicates any relationship with the SOE or the opportunity.
+    final_actions: [NO_FURTHER_ACTION]
+
+  - id: SYN-002
+    created_at: "2026-01-06T09:00:00+00:00"
+    title: Spouse on the tender evaluation committee
+    opportunity_summary: Competitive tender for IT systems integration at a state-owned transport operator. SOE relationship Client. Respondent role Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      RELATIVE_AT_SOE: "Yes"
+      RELATIVE_INFLUENCE: "Yes"
+      RELATIVE_INVOLVEMENT_DETAILS: My spouse is a member of the tender evaluation committee that will score all bids for this contract.
+      RELATIVE_RELATIONSHIP: Spouse
+      RELATIVE_DESIGNATION: Deputy Director, Procurement department
+    outcome: CONFLICT
+    rationale: The relative holds direct decision-making authority over the procurement (evaluation committee member).
+    final_actions: [DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-003
+    created_at: "2026-01-07T09:00:00+00:00"
+    title: Parent with access to bid budget information
+    opportunity_summary: Asset-valuation engagement procured by a state-owned rail authority. SOE relationship Procuring / deciding entity. Respondent role Partner; opportunity owner.
+    is_owner: "Yes"
+    soe_relationship: Procuring / deciding entity
+    answers:
+      <<: *no
+      RELATIVE_AT_SOE: "Yes"
+      RELATIVE_INFLUENCE: "Yes"
+      RELATIVE_INVOLVEMENT_DETAILS: My father works in the budget office and has access to the approved budget and evaluation criteria for this procurement.
+      RELATIVE_RELATIONSHIP: Parent
+      RELATIVE_DESIGNATION: Senior Finance Officer, Budget Office
+      INTERMEDIARY_INVOLVED: "No"
+      OTHER_BID_INDIVIDUALS: "No"
+    outcome: CONFLICT
+    rationale: The relative has access to price-sensitive information relating to the opportunity.
+    final_actions: [ESTABLISH_INFORMATION_BARRIER, RECUSE_FROM_DECISION_MAKING]
+
+  - id: SYN-004
+    created_at: "2026-01-08T09:00:00+00:00"
+    title: Sibling is director of a subcontractor to the SOE
+    opportunity_summary: Network-upgrade programme assurance for a state-owned telecom company. SOE relationship Client. Respondent role Senior Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      THIRD_PARTY_INTEREST: "Yes"
+      THIRD_PARTY_SERVICES_TO: State-Owned Entity
+      THIRD_PARTY_NAME: Northline Fibre Works
+      THIRD_PARTY_REG_NO: NFW-102233
+      THIRD_PARTY_SERVICES_NATURE: Fibre installation for the network upgrade that this engagement would provide assurance over.
+      THIRD_PARTY_OWNERSHIP: Director and 50% owner
+      THIRD_PARTY_RELATIONSHIP: Sibling
+    outcome: CONFLICT
+    rationale: The relative controls a third party whose work would be subject to the engagement's assurance.
+    final_actions: [DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-005
+    created_at: "2026-01-09T09:00:00+00:00"
+    title: Child holds passive minority shares in a large listed supplier
+    opportunity_summary: Strategy review for a state-owned airport operator. SOE relationship Client. Respondent role Consultant; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      THIRD_PARTY_INTEREST: "Yes"
+      THIRD_PARTY_SERVICES_TO: Client
+      THIRD_PARTY_NAME: Globex Aviation Systems plc
+      THIRD_PARTY_REG_NO: GAS-000981
+      THIRD_PARTY_SERVICES_NATURE: Baggage-handling software licences, unrelated to the strategy review scope.
+      THIRD_PARTY_OWNERSHIP: Under 0.01% of listed shares held through a pension fund; no board role or control
+      THIRD_PARTY_RELATIONSHIP: Child
+    outcome: NO CONFLICT
+    rationale: Passive, immaterial listed holding with no control, in services unrelated to the engagement scope.
+    final_actions: [NO_FURTHER_ACTION]
+
+  - id: SYN-006
+    created_at: "2026-01-10T09:00:00+00:00"
+    title: Left SOE 8 months ago and worked on this opportunity
+    opportunity_summary: Regulatory compliance programme for a state-owned gas distributor. SOE relationship Client. Respondent role Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      PRIOR_SOE_EMPLOYMENT: "Yes"
+      PRIOR_EMPLOYMENT_ENTITY: State gas distributor (synthetic)
+      PRIOR_EMPLOYMENT_ROLE: Programme Lead, Regulatory Affairs
+      PRIOR_EMPLOYMENT_LAST_DATE: "2025-05-31"
+      PRIOR_EMPLOYMENT_RECENCY: "<= 2 years"
+      PRIOR_EMPLOYMENT_DIRECT_INVOLVEMENT: "Yes"
+      CONFIDENTIAL_INFORMATION: "No"
+    outcome: CONFLICT
+    rationale: Recent employment (within 2 years) with direct involvement in shaping this opportunity.
+    final_actions: [DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-007
+    created_at: "2026-01-11T09:00:00+00:00"
+    title: Left SOE 6 years ago, no involvement or access
+    opportunity_summary: Cyber-security assessment for a state-owned bank. SOE relationship Client. Respondent role Senior Consultant; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      PRIOR_SOE_EMPLOYMENT: "Yes"
+      PRIOR_EMPLOYMENT_ENTITY: State bank (synthetic)
+      PRIOR_EMPLOYMENT_ROLE: Branch Operations Officer, Retail Banking
+      PRIOR_EMPLOYMENT_LAST_DATE: "2019-12-31"
+      PRIOR_EMPLOYMENT_RECENCY: "> 2 years"
+      PRIOR_EMPLOYMENT_DIRECT_INVOLVEMENT: "No"
+      CONFIDENTIAL_INFORMATION: "No"
+    outcome: NO CONFLICT
+    rationale: Employment ended more than 2 years ago, in an unrelated function, with no involvement or relevant access.
+    final_actions: [NO_FURTHER_ACTION]
+
+  - id: SYN-008
+    created_at: "2026-01-12T09:00:00+00:00"
+    title: Prior employment gave access to price-sensitive tender information
+    opportunity_summary: Procurement advisory for a state-owned mining company. SOE relationship Procuring / deciding entity. Respondent role Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Procuring / deciding entity
+    answers:
+      <<: *no
+      PRIOR_SOE_EMPLOYMENT: "Yes"
+      PRIOR_EMPLOYMENT_ENTITY: State mining company (synthetic)
+      PRIOR_EMPLOYMENT_ROLE: Category Manager, Strategic Sourcing
+      PRIOR_EMPLOYMENT_LAST_DATE: "2023-03-31"
+      PRIOR_EMPLOYMENT_RECENCY: "> 2 years"
+      PRIOR_EMPLOYMENT_DIRECT_INVOLVEMENT: "No"
+      CONFIDENTIAL_INFORMATION: "Yes"
+      CONFIDENTIAL_INFORMATION_DETAILS: I helped prepare the cost baseline and evaluation weightings that are being used in this tender.
+    outcome: CONFLICT
+    rationale: Access to price-sensitive information directly relevant to the current tender, regardless of time elapsed.
+    final_actions: [ESTABLISH_INFORMATION_BARRIER, DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-009
+    created_at: "2026-01-13T09:00:00+00:00"
+    title: Competitor pricing obtained from a former colleague
+    opportunity_summary: Outsourcing advisory bid to a state-owned postal service. SOE relationship Client. Respondent role Senior Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      IMPROPER_INFORMATION: "Yes"
+      IMPROPER_INFORMATION_DETAILS: A former colleague now at a competing bidder shared their draft fee proposal for this tender with me informally.
+    outcome: CONFLICT
+    rationale: Improperly obtained competitor pricing could provide an unfair advantage.
+    final_actions: [RESTRICT_INFORMATION_USE, ESTABLISH_INFORMATION_BARRIER, ESCALATE_LEGAL_COMPLIANCE]
+
+  - id: SYN-010
+    created_at: "2026-01-14T09:00:00+00:00"
+    title: Respondent holds shares in a competing bidder
+    opportunity_summary: Data-platform implementation for a state-owned energy regulator. SOE relationship Client. Respondent role Director; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      OTHER_CONFLICT: "Yes"
+      OTHER_CONFLICT_DETAILS: I personally own 12% of a small analytics firm that is also bidding for this contract.
+    outcome: CONFLICT
+    rationale: A personal financial interest in a competing bidder for the same opportunity.
+    final_actions: [DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-011
+    created_at: "2026-01-15T09:00:00+00:00"
+    title: Client-nominated intermediary with declaration obtained
+    opportunity_summary: Logistics optimisation for a state-owned freight operator. SOE relationship Client. Respondent role Partner; opportunity owner.
+    is_owner: "Yes"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      INTERMEDIARY_INVOLVED: "Yes"
+      INTERMEDIARY_TYPE: Business Consultant
+      INTERMEDIARY_CLIENT_NOMINATED: "Yes"
+      INTERMEDIARY_DECLARATION: "Yes"
+      INTERMEDIARY_DECLARATION_FILE: intermediary_declaration.pdf
+      OTHER_BID_INDIVIDUALS: "No"
+    outcome: NO CONFLICT
+    rationale: Intermediary nominated by the client with a clean, obtained declaration and no adverse facts.
+    final_actions: [NO_FURTHER_ACTION]
+
+  - id: SYN-012
+    created_at: "2026-01-16T09:00:00+00:00"
+    title: Sales partner led by former SOE procurement head
+    opportunity_summary: Fleet electrification advisory to a state-owned bus corporation. SOE relationship Procuring / deciding entity. Respondent role Partner; opportunity owner.
+    is_owner: "Yes"
+    soe_relationship: Procuring / deciding entity
+    answers:
+      <<: *no
+      OTHER_CONFLICT: "Yes"
+      OTHER_CONFLICT_DETAILS: The sales partner's managing director was head of procurement at the bus corporation until last year.
+      INTERMEDIARY_INVOLVED: "Yes"
+      INTERMEDIARY_TYPE: Sales Partner
+      INTERMEDIARY_CLIENT_NOMINATED: "No"
+      INTERMEDIARY_DECLARATION: "Yes"
+      INTERMEDIARY_DECLARATION_FILE: sales_partner_declaration.pdf
+      OTHER_BID_INDIVIDUALS: "No"
+    outcome: CONFLICT
+    rationale: Non-nominated intermediary whose principal recently held procurement authority at the SOE.
+    final_actions: [HOLD_OPPORTUNITY]
+
+  - id: SYN-013
+    created_at: "2026-01-17T09:00:00+00:00"
+    title: Owner with additional bid team members, no disclosures
+    opportunity_summary: Pension-fund operating-model review for a state-owned pension administrator. SOE relationship Client. Respondent role Partner; opportunity owner.
+    is_owner: "Yes"
+    soe_relationship: Client
+    answers:
+      <<: *no
+      INTERMEDIARY_INVOLVED: "No"
+      OTHER_BID_INDIVIDUALS: "Yes"
+      OTHER_BID_INDIVIDUAL_EMAILS: specialist.one@example.com
+    outcome: NO CONFLICT
+    rationale: No disclosures; additional bid team members are recorded for their own declarations.
+    final_actions: [NO_FURTHER_ACTION]
+
+  - id: SYN-014
+    created_at: "2026-01-18T09:00:00+00:00"
+    title: Mixed — older SOE employment plus spouse's firm serving the client
+    opportunity_summary: ERP implementation for a private contractor bidding into a state-owned highways agency. SOE relationship Counterparty. Respondent role Senior Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Counterparty
+    answers:
+      <<: *no
+      THIRD_PARTY_INTEREST: "Yes"
+      THIRD_PARTY_SERVICES_TO: Client
+      THIRD_PARTY_NAME: Meridian Payroll Partners LLP
+      THIRD_PARTY_REG_NO: MPP-55120
+      THIRD_PARTY_SERVICES_NATURE: Payroll processing for the client, including staff who would be migrated to the new ERP.
+      THIRD_PARTY_OWNERSHIP: Equity partner (one of three)
+      THIRD_PARTY_RELATIONSHIP: Spouse
+      PRIOR_SOE_EMPLOYMENT: "Yes"
+      PRIOR_EMPLOYMENT_ENTITY: State highways agency (synthetic)
+      PRIOR_EMPLOYMENT_ROLE: Graduate Engineer, Road Maintenance
+      PRIOR_EMPLOYMENT_LAST_DATE: "2017-08-31"
+      PRIOR_EMPLOYMENT_RECENCY: "> 2 years"
+      PRIOR_EMPLOYMENT_DIRECT_INVOLVEMENT: "No"
+      CONFIDENTIAL_INFORMATION: "No"
+    outcome: CONFLICT
+    rationale: The prior employment alone is remote, but the spouse's partnership serves the client in scope of the engagement.
+    final_actions: [DISENGAGE_INDIVIDUAL]
+
+  - id: SYN-015
+    created_at: "2026-01-19T09:00:00+00:00"
+    title: SOE is counterparty, no disclosures
+    opportunity_summary: Due diligence for a private acquirer purchasing assets from a state-owned shipping line. SOE relationship Counterparty. Respondent role Manager; not opportunity owner.
+    is_owner: "No"
+    soe_relationship: Counterparty
+    answers: {<<: *no}
+    outcome: NO CONFLICT
+    rationale: No disclosures; the SOE is the counterparty and no relationships were declared.
+    final_actions: [NO_FURTHER_ACTION]

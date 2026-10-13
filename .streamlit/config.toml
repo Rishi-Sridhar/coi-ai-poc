@@ -1,0 +1,16 @@
+[server]
+maxUploadSize = 10
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#1d2939"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f8f9fb"
+textColor = "#101828"
+
+[client]
+# Hide the developer toolbar / Deploy button for a clean business demo.
+toolbarMode = "minimal"

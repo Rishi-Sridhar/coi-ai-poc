@@ -1,0 +1,30 @@
+# Demo opportunity presets (synthetic organisations). Fields remain editable in the UI.
+opportunities:
+  - key: SMART_METER
+    opportunity_id: OPP-2026-0142
+    opportunity_name: Smart-Meter Rollout Advisory — Competitive Tender
+    client: Eastvale Power Distribution Corporation
+    soe: Eastvale Power Distribution Corporation
+    soe_relationship: Client
+    description: >-
+      Competitive tender for programme-management and technical advisory services supporting the
+      rollout of 1.2 million smart meters for a state-owned power distribution organisation.
+
+  - key: PORT_LOGISTICS
+    opportunity_id: OPP-2026-0187
+    opportunity_name: Port Logistics Digital Transformation
+    client: Harbourline Logistics Ltd
+    soe: State Port Authority of Meridia
+    soe_relationship: Procuring / deciding entity
+    description: >-
+      Digital transformation of container-terminal operations for a private logistics operator whose
+      concession renewal is decided by the state port authority.
+
+  - key: WATER_TARIFF
+    opportunity_id: OPP-2026-0203
+    opportunity_name: Water Utility Tariff Review
+    client: Riverton Water Board
+    soe: Riverton Water Board
+    soe_relationship: Client
+    description: >-
+      Independent review of the tariff methodology and cost-recovery model for a state-owned water utility.

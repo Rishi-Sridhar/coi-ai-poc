@@ -1,0 +1,8 @@
+# Verified on Streamlit 1.31 and 1.65 (newer releases remove `use_container_width`, so the upper bound is pinned).
+streamlit>=1.31,<1.66
+groq>=0.30,<2
+python-dotenv>=1.0
+PyYAML>=6.0
+jsonschema>=4.0
+pandas>=2.0
+pytest>=7.0

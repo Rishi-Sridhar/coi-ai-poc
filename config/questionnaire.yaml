@@ -1,0 +1,382 @@
+# Conflict of Interest questionnaire definition (POC, synthetic).
+#
+# show_if supports EITHER a single condition:
+#     show_if: {question: RELATIVE_AT_SOE, equals: "Yes"}
+# OR a short AND list:
+#     show_if:
+#       - {question: RELATIVE_AT_SOE, equals: "Yes"}
+#       - {question: RELATIVE_INFLUENCE, equals: "Yes"}
+# A question is visible only if every referenced question is itself visible and matches.
+#
+# input_type multiselect: stored as a comma-separated string in option order (e.g. "Spouse, Parent").
+# applies_to: all | owner   (owner = only shown when "Is Opportunity Owner?" = Yes)
+# risk_indicator: a "Yes" answer requires human review (routing floor) and is used in precedent matching.
+# weight: precedent-matching weight for risk_indicator questions.
+# required_elements: what an adequate free-text answer must contain (checked by the AI quality assessor).
+
+version: v1
+
+relationship_options: &relationships [Spouse, Sibling, Child, Parent, Other relative]
+
+questions:
+  # ---------------- QUESTION 1 ----------------
+  - id: RELATIVE_AT_SOE
+    number: "1"
+    section: "Family / relatives at the State-Owned Entity"
+    label: Relative employed by the State-Owned Entity
+    text: Is your family member or relative employed by the above State-Owned Entity?
+    input_type: yes_no
+    applies_to: all
+    required_when_visible: true
+    risk_indicator: true
+    weight: 3
+
+  - id: RELATIVE_INFLUENCE
+    number: "1a"
+    label: Relative's role, influence, decision-making authority or information access
+    text: >-
+      Do they have any role, influence, decision-making authority in relation to this opportunity,
+      or access to information relating to the opportunity?
+    input_type: yes_no
+    applies_to: all
+    show_if: {question: RELATIVE_AT_SOE, equals: "Yes"}
+    required_when_visible: true
+    risk_indicator: true
+    weight: 3
+
+  - id: RELATIVE_INVOLVEMENT_DETAILS
+    number: "1a"
+    label: Details of the relative's involvement
+    text: >-
+      Describe their involvement: their role in relation to this opportunity, the influence or
+      decision-making authority they hold, and any information they can access.
+    input_type: textarea
+    applies_to: all
+    show_if:
+      - {question: RELATIVE_AT_SOE, equals: "Yes"}
+      - {question: RELATIVE_INFLUENCE, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - the relative's specific role or function in relation to this opportunity
+      - the nature of their influence, decision-making authority, or information access
+      - how that involvement connects to this opportunity or procurement
+
+  - id: RELATIVE_RELATIONSHIP
+    number: "1b"
+    label: Relationship to you
+    text: Relationship (select all that apply)
+    input_type: multiselect
+    options: *relationships
+    applies_to: all
+    show_if: {question: RELATIVE_AT_SOE, equals: "Yes"}
+    required_when_visible: true
+
+  - id: RELATIVE_DESIGNATION
+    number: "1b"
+    label: Relative's designation / role in the State-Owned Entity
+    text: Designation / role in State-Owned Entity
+    input_type: text
+    applies_to: all
+    show_if: {question: RELATIVE_AT_SOE, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - the relative's job title or designation
+      - the department or function they work in
+
+  # ---------------- QUESTION 2 ----------------
+  - id: THIRD_PARTY_INTEREST
+    number: "2"
+    section: "Third-party interests"
+    label: Relative's interest in a third party involved in this opportunity
+    text: >-
+      Does any family member or relative currently or previously hold an ownership interest, serve as
+      director, partner, sole proprietor, or equivalent in a third party involved in providing services
+      to the client or State-Owned Entity in relation to this opportunity?
+    input_type: yes_no
+    applies_to: all
+    required_when_visible: true
+    risk_indicator: true
+    weight: 3
+
+  - id: THIRD_PARTY_SERVICES_TO
+    number: "2a"
+    label: Third party provides services to
+    text: Who does the third party provide services to?
+    input_type: select
+    options: [Client, State-Owned Entity]
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+
+  - id: THIRD_PARTY_NAME
+    number: "2b"
+    label: Third-party name
+    text: Third-party name
+    input_type: text
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+
+  - id: THIRD_PARTY_REG_NO
+    number: "2b"
+    label: Third-party registration number
+    text: Registration number
+    input_type: text
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+
+  - id: THIRD_PARTY_SERVICES_NATURE
+    number: "2b"
+    label: Nature of services provided by the third party
+    text: Nature of services
+    input_type: textarea
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - what services the third party provides
+      - how those services relate to this opportunity, the client or the State-Owned Entity
+
+  - id: THIRD_PARTY_OWNERSHIP
+    number: "2b"
+    label: Ownership / control held by the relative
+    text: Ownership / control held
+    input_type: text
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - the type of interest or position held (e.g. shareholding, directorship, partnership)
+      - the extent of ownership or control
+
+  - id: THIRD_PARTY_RELATIONSHIP
+    number: "2c"
+    label: Relationship with relevant individual
+    text: Relationship with relevant individual (select all that apply)
+    input_type: multiselect
+    options: *relationships
+    applies_to: all
+    show_if: {question: THIRD_PARTY_INTEREST, equals: "Yes"}
+    required_when_visible: true
+
+  # ---------------- QUESTION 3 ----------------
+  - id: PRIOR_SOE_EMPLOYMENT
+    number: "3"
+    section: "Prior employment / affiliation"
+    label: Prior employment or affiliation with the State-Owned Entity
+    text: Do you have any prior employment or affiliation with the State-Owned Entity?
+    input_type: yes_no
+    applies_to: all
+    required_when_visible: true
+    risk_indicator: true
+    weight: 2
+
+  - id: PRIOR_EMPLOYMENT_ENTITY
+    number: "3a"
+    label: Prior employer / affiliated entity name
+    text: Entity name
+    input_type: text
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: true
+
+  - id: PRIOR_EMPLOYMENT_ROLE
+    number: "3a"
+    label: Role / designation held
+    text: Role / designation
+    input_type: text
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - the job title or designation held
+      - the department or function
+
+  - id: PRIOR_EMPLOYMENT_LAST_DATE
+    number: "3a"
+    label: Last working date
+    text: Last working date
+    input_type: date
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: true
+
+  - id: PRIOR_EMPLOYMENT_RECENCY
+    number: "3a"
+    label: Time since last working date (system-calculated)
+    text: Time since last working date (system-calculated, supporting information)
+    input_type: derived
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: false
+
+  - id: PRIOR_EMPLOYMENT_DIRECT_INVOLVEMENT
+    number: "3b"
+    label: Directly involved in this opportunity
+    text: Were you directly involved in this opportunity?
+    input_type: yes_no
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: true
+    risk_indicator: true
+    weight: 2
+
+  - id: CONFIDENTIAL_INFORMATION
+    number: "3c"
+    label: Confidential / price-sensitive information or decision influence from prior employment
+    text: >-
+      Did the prior employment give you access to confidential or price-sensitive information relating
+      to this opportunity, or influence over decision-making?
+    input_type: yes_no
+    applies_to: all
+    show_if: {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+    required_when_visible: true
+    risk_indicator: true
+    weight: 3
+
+  - id: CONFIDENTIAL_INFORMATION_DETAILS
+    number: "3c"
+    label: Details of confidential information access / influence
+    text: Explain the information you had access to or the influence you held.
+    input_type: textarea
+    applies_to: all
+    show_if:
+      - {question: PRIOR_SOE_EMPLOYMENT, equals: "Yes"}
+      - {question: CONFIDENTIAL_INFORMATION, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - what confidential or price-sensitive information, or decision-making influence, was held
+      - how it relates to this opportunity
+
+  # ---------------- QUESTION 4 ----------------
+  - id: IMPROPER_INFORMATION
+    number: "4"
+    section: "Improperly obtained information"
+    label: Improperly obtained confidential information
+    text: >-
+      Do you have confidential information about this opportunity or a competitor that was obtained
+      improperly and could provide an unfair advantage?
+    input_type: yes_no
+    applies_to: all
+    required_when_visible: true
+    risk_indicator: true
+    weight: 3
+
+  - id: IMPROPER_INFORMATION_DETAILS
+    number: "4"
+    label: Details of improperly obtained information
+    text: Provide details of the information and how it was obtained.
+    input_type: textarea
+    applies_to: all
+    show_if: {question: IMPROPER_INFORMATION, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - what information is held
+      - how and from whom it was obtained
+
+  # ---------------- QUESTION 5 ----------------
+  - id: OTHER_CONFLICT
+    number: "5"
+    section: "Other conflicts"
+    label: Other undisclosed conflict of interest
+    text: Are you aware of any Conflict of Interest relating to this opportunity not already disclosed above?
+    input_type: yes_no
+    applies_to: all
+    required_when_visible: true
+    risk_indicator: true
+    weight: 2
+
+  - id: OTHER_CONFLICT_DETAILS
+    number: "5"
+    label: Details of other conflict
+    text: Provide details of the conflict.
+    input_type: textarea
+    applies_to: all
+    show_if: {question: OTHER_CONFLICT, equals: "Yes"}
+    required_when_visible: true
+    required_elements:
+      - who or what the conflict involves
+      - how it relates to this opportunity
+
+  # ---------------- QUESTION 6 (OPPORTUNITY OWNER ONLY) ----------------
+  - id: INTERMEDIARY_INVOLVED
+    number: "6.1"
+    section: "Opportunity Owner only"
+    label: Intermediaries involved
+    text: >-
+      Are any intermediaries involved? (Examples: Business Consultant, Sales Partner, Lobbyist,
+      Other intermediary)
+    input_type: yes_no
+    applies_to: owner
+    required_when_visible: true
+    risk_indicator: true
+    weight: 2
+
+  - id: INTERMEDIARY_TYPE
+    number: "6.1"
+    label: Type of intermediary
+    text: Type of intermediary
+    input_type: select
+    options: [Business Consultant, Sales Partner, Lobbyist, Other intermediary]
+    applies_to: owner
+    show_if: {question: INTERMEDIARY_INVOLVED, equals: "Yes"}
+    required_when_visible: true
+
+  - id: INTERMEDIARY_CLIENT_NOMINATED
+    number: "6.2a"
+    label: Third party is client nominated
+    text: Is the third party client nominated?
+    input_type: yes_no
+    applies_to: owner
+    show_if: {question: INTERMEDIARY_INVOLVED, equals: "Yes"}
+    required_when_visible: true
+
+  - id: INTERMEDIARY_DECLARATION
+    number: "6.2b"
+    label: Intermediary Conflict of Interest declaration obtained
+    text: Has the relevant Conflict of Interest declaration been obtained?
+    input_type: yes_no
+    applies_to: owner
+    show_if: {question: INTERMEDIARY_INVOLVED, equals: "Yes"}
+    required_when_visible: true
+
+  - id: INTERMEDIARY_DECLARATION_MISSING_DETAILS
+    number: "6.2b"
+    label: Reason the intermediary declaration has not been obtained
+    text: Please explain why the intermediary Conflict of Interest declaration has not been obtained.
+    input_type: textarea
+    applies_to: owner
+    show_if:
+      - {question: INTERMEDIARY_INVOLVED, equals: "Yes"}
+      - {question: INTERMEDIARY_DECLARATION, equals: "No"}
+    required_when_visible: true
+    required_elements:
+      - why the declaration has not been obtained
+      - the current status or expected timing of obtaining it
+
+  - id: INTERMEDIARY_DECLARATION_FILE
+    number: "6.2b"
+    label: Intermediary / vendor declaration upload
+    text: Upload the intermediary / vendor Conflict of Interest declaration (PDF, DOCX, JPG, PNG — max 10 MB)
+    input_type: file
+    applies_to: owner
+    show_if: {question: INTERMEDIARY_INVOLVED, equals: "Yes"}
+    required_when_visible: true
+
+  - id: OTHER_BID_INDIVIDUALS
+    number: "6.3"
+    label: Other individuals included in the bid
+    text: Are other individuals included in the bid other than Account Management Team and Bid Manager?
+    input_type: yes_no
+    applies_to: owner
+    required_when_visible: true
+
+  - id: OTHER_BID_INDIVIDUAL_EMAILS
+    number: "6.3"
+    label: Email addresses of other individuals
+    text: Email address(es) of the other individuals (one per line or comma-separated)
+    input_type: email_list
+    applies_to: owner
+    show_if: {question: OTHER_BID_INDIVIDUALS, equals: "Yes"}
+    required_when_visible: true

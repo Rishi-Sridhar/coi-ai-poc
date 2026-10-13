@@ -1,0 +1,76 @@
+# POC Action Catalogue — Synthetic demonstration guidance. Final recommended actions and mitigation controls in
+# production must be defined and approved by Risk & Compliance.
+#
+# The AI may recommend ONLY codes listed here (enforced by the output schema and by post-AI guardrails).
+# category: none | information | mitigation | escalation   (drives restrained display styling only)
+# exclusive: true = cannot be combined with any other action (e.g. "No Further Action").
+# final_action: false = cannot be selected as the reviewer's final action of a closed Conflict / No Conflict decision.
+# workflow: true = routing/workflow step (e.g. Compliance review), not a substantive mitigation; it is not shown as a
+#   recommended action card or e-mail recommendation — "Compliance Review Required" is shown as the next step instead.
+
+version: v1
+disclaimer: >-
+  POC Action Catalogue — Synthetic demonstration guidance. Final recommended actions and mitigation controls in
+  production must be defined and approved by Risk & Compliance.
+
+actions:
+  - code: NO_FURTHER_ACTION
+    label: No Further Action
+    description: No additional mitigation is currently recommended, subject to final Compliance confirmation.
+    category: none
+    exclusive: true
+
+  - code: REQUEST_ADDITIONAL_INFORMATION
+    label: Request Additional Information
+    description: Obtain clarification or missing information before making a final Conflict of Interest decision.
+    category: information
+    final_action: false   # recorded only through the Request More Information workflow
+
+  - code: DISENGAGE_INDIVIDUAL
+    label: Disengage Individual from Opportunity
+    description: Remove the affected individual from participation in the opportunity or relevant workstream.
+    category: mitigation
+
+  - code: RECUSE_FROM_DECISION_MAKING
+    label: Recuse Individual from Relevant Decisions
+    description: >-
+      Prevent the affected individual from participating in decisions, evaluations, approvals, or selections
+      connected to the identified conflict.
+    category: mitigation
+
+  - code: ESTABLISH_INFORMATION_BARRIER
+    label: Establish Information Barrier
+    description: Restrict the individual's access to confidential, commercially sensitive, or opportunity-related information.
+    category: mitigation
+
+  - code: RESTRICT_INFORMATION_USE
+    label: Do Not Use / Restrict Access to Information
+    description: >-
+      Ensure improperly obtained, competitor, confidential, or otherwise restricted information is not used or
+      disseminated.
+    category: mitigation
+
+  - code: HOLD_OPPORTUNITY
+    label: Place Opportunity on Hold
+    description: Prevent the opportunity from progressing until the identified compliance requirement has been resolved.
+    category: mitigation
+
+  - code: OBTAIN_REQUIRED_DECLARATION
+    label: Obtain Required COI Declaration
+    description: >-
+      Obtain and review the required intermediary or third-party Conflict of Interest declaration before proceeding.
+    category: information
+
+  - code: ESCALATE_COMPLIANCE
+    label: Escalate to Compliance
+    description: Escalate the matter for formal Compliance assessment and decision.
+    category: escalation
+    workflow: true        # routing (Compliance Review Required), e.g. when the automated assessment is unavailable
+    final_action: false
+
+  - code: ESCALATE_LEGAL_COMPLIANCE
+    label: Escalate to Compliance / Legal
+    description: >-
+      Escalate the issue for specialist Compliance and/or Legal review because of potentially serious
+      confidential-information, competition, regulatory, or legal concerns.
+    category: escalation
