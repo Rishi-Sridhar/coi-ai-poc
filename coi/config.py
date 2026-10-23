@@ -38,6 +38,8 @@ class Settings:
     reviewer_email: str = field(default_factory=lambda: os.getenv("REVIEWER_EMAIL", "").strip() or "coi-reviewer@demo.local")
     app_base_url: str = field(default_factory=lambda: (os.getenv("APP_BASE_URL", "").strip() or "http://localhost:8501").rstrip("/"))
 
+    admin_password_hash: str = field(default_factory=lambda: os.getenv("ADMIN_PASSWORD_HASH", "").strip())
+
     review_clean_cases: bool = field(default_factory=lambda: _bool("REVIEW_CLEAN_CASES", False))
     prompt_version: str = field(default_factory=lambda: os.getenv("PROMPT_VERSION", "v1"))
     guidance_version: str = field(default_factory=lambda: os.getenv("GUIDANCE_VERSION", "v1"))

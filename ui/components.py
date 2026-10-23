@@ -15,10 +15,11 @@ PAGES = {
     "reviewer": "Review",
     "history": "Case history",
     "precedents": "Reference cases",
-    "admin": "Email outbox & admin",
+    "outbox": "Email outbox",
+    "admin": "Admin (sign-in required)",
 }
 PRIMARY_PAGES = ["submit", "reviewer"]
-MORE_PAGES = ["history", "precedents", "admin"]
+MORE_PAGES = ["history", "precedents", "outbox", "admin"]
 RESPONDENT, REVIEWER = "Respondent", "Compliance reviewer"
 
 DEMO_DISCLOSURE = "Demo environment · Synthetic test data"

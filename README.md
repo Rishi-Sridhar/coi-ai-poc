@@ -37,7 +37,7 @@ One Streamlit app, SQLite, the Groq API (LLM), and config files. No frameworks, 
 
 | Layer | File(s) | Responsibility |
 |---|---|---|
-| UI | `app.py`, `ui/*.py` | Assessment (declaration + inline result) · Review · More: Case history, Reference cases, Email outbox & admin. Shared result card in `ui/result_view.py` |
+| UI | `app.py`, `ui/*.py` | Assessment (declaration + inline result) · Review · More: Case history, Reference cases, Email outbox, Admin (sign-in required). Shared result card in `ui/result_view.py` |
 | Questionnaire | `config/questionnaire.yaml`, `coi/questionnaire.py` | Question definitions, simple `show_if`, visible-answer filtering, deterministic validation |
 | Retrieval | `coi/retrieval.py` | Weighted structured precedent matching (no embeddings) |
 | AI | `prompts/quality.py`, `prompts/assessment.py`, `coi/llm.py` | Two dedicated structured-output LLM calls |
@@ -144,7 +144,7 @@ automatically on first run — no separate initialisation step. **No API key?** 
 whole demo runs offline with the clearly labelled demo fallback.
 
 `.env` is read when Streamlit starts: **restart Streamlit (Ctrl+C, then `streamlit run app.py`) after editing `.env`.**
-To return to a clean demo state at any time: **More → Email outbox & admin → Demo tools → Reset demo data**.
+To return to a clean demo state at any time: **More → Admin (sign in) → Demo tools → Reset demo data**.
 
 ### Environment variables
 
@@ -154,10 +154,32 @@ To return to a clean demo state at any time: **More → Email outbox & admin →
 | `GROQ_MODEL` | `openai/gpt-oss-120b` | Groq model ID (configurable). |
 | `DEMO_MODE` | `false` | `true` = use the clearly labelled **Demo fallback assessment** (no API calls). |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL` | – / 587 | Optional SMTP. Empty host → emails stay in the outbox as `NOT_CONFIGURED`. |
+| `ADMIN_PASSWORD_HASH` | – | Hash for the **Admin page sign-in** (the only page that needs a login). Empty = Admin stays locked. Create with `python -m coi.admin_auth`. |
 | `REVIEWER_EMAIL` | `coi-reviewer@demo.local` | Reviewer notification recipient. |
 | `APP_BASE_URL` | `http://localhost:8501` | Used in email deep links: `APP_BASE_URL/?page=reviewer&case=COI-0007`. |
 | `REVIEW_CLEAN_CASES` | `false` | `true` = clean NO CONFLICT APPARENT cases also go to reviewer confirmation. |
 | `PROMPT_VERSION`, `GUIDANCE_VERSION`, `QUESTIONNAIRE_VERSION` | `v1` | Stored with every assessment/submission. |
+
+### Admin page sign-in
+
+Only the **Admin** page (More → Admin) asks for a password. Respondent, Review, Case history, Reference cases and the
+Email outbox need no login. Admin holds the sensitive demo tools (Reset demo data, Simulate AI failure, Send test email)
+and the technical settings view.
+
+1. Create a hash (password of at least 12 characters; input is hidden):
+
+   ```
+   python -m coi.admin_auth
+   ```
+
+   Non-interactive: `printf '%s' "$PASSWORD" | python -m coi.admin_auth --stdin`.
+2. Put the printed line in `.env` as `ADMIN_PASSWORD_HASH=...` and restart Streamlit. The value is a salted scrypt hash
+   (`scrypt:N:r:p:salt:hash`), not the password, and contains no `$`, so Docker Compose and dotenv never expand it.
+3. It fails closed: with no valid hash set, the Admin page stays locked.
+
+Sessions last 30 minutes and are extended on activity. After 5 failed attempts within 15 minutes (counted across all
+browser sessions) sign-in is locked for 5 minutes. Every sign-in attempt is written to the application log as an
+`[admin-auth]` line. Each sensitive action re-checks the sign-in. Tests: `tests/test_admin_auth.py`.
 
 ### Groq setup
 
@@ -178,7 +200,7 @@ manual review as *AI ASSESSMENT UNAVAILABLE*; use **Re-run automated assessment*
 
 ### SMTP setup (optional)
 
-The demo works fully without SMTP — every email is visible in **More → Email outbox & admin** with an HTML preview.
+The demo works fully without SMTP — every email is visible in **More → Email outbox** with an HTML preview.
 
 To send real email, set in `.env`:
 
@@ -196,7 +218,7 @@ Microsoft 365: `SMTP_HOST=smtp.office365.com`, `SMTP_PORT=587` (SMTP AUTH must b
 Port 465 uses implicit TLS; other ports use STARTTLS when offered. For a safe local inbox use
 [Mailpit](https://github.com/axllent/mailpit) (`SMTP_HOST=localhost`, `SMTP_PORT=1025`, no username).
 
-Test: `python scripts/smoke_test.py --send`, or **More → Email outbox & admin → Demo tools → Send test email**.
+Test: `python scripts/smoke_test.py --send`, or **More → Admin (sign in) → Demo tools → Send test email**.
 Delivery status is recorded per email as `SENT`, `FAILED` (with error) or `NOT_CONFIGURED`.
 
 ---
@@ -212,9 +234,9 @@ click away. **Review** shows the same summary on the left and the **Reviewer dec
 narrow screens). Supporting sections are collapsed: Full Assessment Explanation, Previous Reviewed Cases Considered,
 Audit History and **Advanced Technical Details** (engine/model, versions, routing, guardrails, similarity scores,
 prompts, raw output). Secondary destinations live under the sidebar's **More** menu: Case history, Reference cases,
-Email outbox & admin. Demo presets are under the sidebar's **Demo controls**.
+Email outbox, Admin (sign-in required). Demo presets are under the sidebar's **Demo controls**.
 
-Before starting: **More → Email outbox & admin → Demo tools → Reset demo data** (tick, type `RESET`). The sidebar
+Before starting: **More → Admin (sign in) → Demo tools → Reset demo data** (tick, type `RESET`). The sidebar
 **Viewing as** switch selects *Compliance reviewer* (default, sees the assessment) or *Respondent* (sees only a
 confirmation). Submit about **one declaration per minute** on the Groq free tier.
 
@@ -229,7 +251,7 @@ confirmation). Submit about **one declaration per minute** on the Groq free tier
 | 7 | **Learning Case A** ("5") | Relative in an unrelated department, no influence → **Potential Conflict Identified** (conservative synthetic guidance). *Other relevant information* shows the respondent's mitigating answers (no influence; unrelated department). **Review Case** → **Override Assessment** → Final decision **No Conflict** → Final action: *Modify actions* → **No Further Action**, reason *"Relative has no involvement, influence or access relevant to the opportunity."*, tick **Use this reviewed decision as a future reference case** → **Save decision** → reference case `REV-001` (see More → Reference cases). |
 | 8 | **Learning Case B** ("6") | Different respondent, same facts → **No Conflict Apparent**; summary cites reviewer-approved reference case REV-001. *Previous Reviewed Cases Considered* → REV-001 "Followed — materially similar facts". |
 | 9 | **Learning Case C** ("7") | Relative on the tender evaluation committee → **Potential Conflict Identified**; REV-001 shown as "Not followed — a material fact differs" (decision-making authority). |
-| 10 | **More → Email outbox & admin → Demo tools → Simulate AI failure** on → submit **"2 · POTENTIAL CONFLICT"** | **Automated Assessment Unavailable** — manual compliance review required; case, email and review still work. Turn it off; **Re-run automated assessment** on the Review page. |
+| 10 | **More → Admin (sign in) → Demo tools → Simulate AI failure** on → submit **"2 · POTENTIAL CONFLICT"** | **Automated Assessment Unavailable** — manual compliance review required; case, email and review still work. Turn it off; **Re-run automated assessment** on the Review page. |
 | 11 | Deep link | Open the review link from an outbox email (or Case history) → the exact case opens in Review. |
 
 Say at step 8: *"The foundation model was not retrained. The behaviour changed because a reviewer-approved
@@ -295,7 +317,7 @@ submission version).
 app.py                       Streamlit entry: banner, persona, navigation, deep links
 coi/                         config, db, questionnaire, retrieval, llm, fallback, guardrails, pipeline, review, emailer, demo
 prompts/                     quality.py, assessment.py (prompt text + JSON output schemas)
-ui/                          submit, reviewer, history, precedents, admin pages + shared components
+ui/                          submit, reviewer, history, precedents, outbox, admin (sign-in) pages + shared components
 config/                      questionnaire.yaml, guidance.md, action_catalog.yaml, opportunities.yaml, demo_scenarios.yaml, synthetic_precedents.yaml
 scripts/                     smoke_test.py, evaluate_synthetic.py
 samples/                     sample_intermediary_declaration.pdf (synthetic upload for the demo)

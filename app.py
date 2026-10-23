@@ -16,7 +16,7 @@ st.set_page_config(page_title="Conflict of Interest Assessment", page_icon="🛡
 
 from coi.config import BANNER, LEARNING_STATEMENT, get_settings  # noqa: E402
 from coi.db import init_db, simulate_ai_failure  # noqa: E402
-from ui import admin_page, history_page, precedents_page, reviewer_page, submit_page  # noqa: E402
+from ui import admin_page, history_page, outbox_page, precedents_page, reviewer_page, submit_page  # noqa: E402
 from ui.components import (CSS, MORE_PAGES, PAGES, PRIMARY_PAGES, RESPONDENT, REVIEWER, go,  # noqa: E402
                            set_query)
 
@@ -115,5 +115,6 @@ with st.sidebar:
     "reviewer": reviewer_page.render,
     "history": history_page.render,
     "precedents": precedents_page.render,
-    "admin": admin_page.render,
+    "outbox": outbox_page.render,
+    "admin": admin_page.render,  # the only page behind a sign-in
 }[st.session_state["nav"]](settings)
